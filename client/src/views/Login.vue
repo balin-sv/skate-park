@@ -1,5 +1,5 @@
 <template>
-  <h1><RouterLink to="/">Skate Park</RouterLink></h1>
+  <h1>Skate Park</h1>
 
   <div class="py-5">
     <h2>Iniciar Sesión</h2>

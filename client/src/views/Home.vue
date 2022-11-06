@@ -20,30 +20,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td><div></div></td>
-          <td>Tony Hawk</td>
-          <td>12</td>
-          <td>Kickflip</td>
-          <td class="text-success font-weight-bold">Aprobado</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td><div></div></td>
-          <td>Evelien Bouilliart</td>
-          <td>10</td>
-          <td>Heelflip</td>
-          <td class="text-success font-weight-bold">Aprobado</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td><div></div></td>
-          <td>Danny Way</td>
-          <td>8</td>
-          <td>Ollie</td>
-          <td class="text-warning font-weight-bold">En revisión</td>
-        </tr>
+        <table-rows :userData="userList"></table-rows>
       </tbody>
     </table>
     <RouterLink to="/login">Iniciar Sesión</RouterLink> |
@@ -52,4 +29,20 @@
 </template>
 <script setup>
 import { RouterLink } from "vue-router";
+import TableRows from "@/components/TableRows.vue";
+import { ref } from "vue";
+import axios from "axios";
+
+const userList = ref([]);
+
+const getUsers = async (query = "") => {
+  await axios
+    .get("http://localhost:5000/users")
+    .then((res) => {
+      userList.value = res.data;
+      console.log(res);
+    })
+    .catch((err) => console.log(err));
+};
+getUsers();
 </script>
