@@ -1,5 +1,5 @@
 <template>
-  <tr v-for="user in userData">
+  <tr v-for="user in usersList">
     <th scope="row">{{ user.id }}</th>
     <td><div></div></td>
     <td>{{ user.nombre }}</td>
@@ -16,7 +16,7 @@
 
 <script setup>
 const props = defineProps({
-  userData: {
+  usersList: {
     type: Array,
   },
 });

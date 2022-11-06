@@ -20,7 +20,7 @@
         </tr>
       </thead>
       <tbody>
-        <table-rows :userData="userList"></table-rows>
+        <table-rows :usersList="usersList"></table-rows>
       </tbody>
     </table>
     <RouterLink to="/login">Iniciar Sesión</RouterLink> |
@@ -33,13 +33,13 @@ import TableRows from "@/components/TableRows.vue";
 import { ref } from "vue";
 import axios from "axios";
 
-const userList = ref([]);
+const usersList = ref([]);
 
 const getUsers = async (query = "") => {
   await axios
     .get("http://localhost:5000/users")
     .then((res) => {
-      userList.value = res.data;
+      usersList.value = res.data;
       console.log(res);
     })
     .catch((err) => console.log(err));

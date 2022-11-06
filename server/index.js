@@ -46,3 +46,23 @@ app.get("/users", async (req, res) => {
 app.listen(port, () => {
   console.log("server start", port);
 });
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const client = await pool.connect();
+    const checkUser = {
+      text: "select * from skaters where email =$1 and password =$2",
+      values: [email, password],
+    };
+    const result = await client.query(checkUser);
+    if (result.rows.length == 0) {
+      res.status(401).send("el usuario no autorizado");
+    } else {
+      res.status(200).send(result.rows);
+    }
+    client.release(true);
+  } catch (err) {
+    console.log("An error has occurred ", err);
+  }
+});

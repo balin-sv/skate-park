@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import axios from "axios";
 
 export const useAuthStore = defineStore(
   "auth",
@@ -12,7 +13,30 @@ export const useAuthStore = defineStore(
       getUserStatus() {
         return this.isAuthenticated;
       },
-      logIn() {},
+      getUser() {
+        return this.user;
+      },
+      logIn(email, password) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post("http://localhost:5000/login", {
+              email,
+              password,
+            })
+            .then((result) => {
+              if (result) {
+                this.user = result.data[0];
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            .catch((error) => {
+              resolve(false);
+              reject(error);
+            });
+        });
+      },
     },
   },
   { persist: true }
