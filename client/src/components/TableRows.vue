@@ -1,6 +1,6 @@
 <template>
-  <tr v-for="user in usersList">
-    <th scope="row">{{ user.id }}</th>
+  <tr v-for="(user, index) in usersList" :key="index">
+    <th scope="row">{{ index + 1 }}</th>
     <td><div></div></td>
     <td>{{ user.nombre }}</td>
     <td>{{ user.anos_experiencia }}</td>

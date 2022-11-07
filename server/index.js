@@ -82,3 +82,38 @@ app.delete("/delete/:id", async (req, res) => {
     console.log("An error has occurred ", err);
   }
 });
+
+app.put("/user/:id", async (req, res) => {
+  const { nombre, password, anos_experiencia, especialidad } = req.body;
+  const id = req.params.id;
+  console.log("id:", id);
+  console.log(nombre, password, anos_experiencia, especialidad);
+  try {
+    const client = await pool.connect();
+    const updateUser = {
+      text: `update skaters set nombre=$1,password=$2,anos_experiencia=$3,especialidad=$4 where id=${id}`,
+      values: [nombre, password, anos_experiencia, especialidad],
+    };
+    const result = await client.query(updateUser);
+    res.send(result.rows);
+    client.release(true);
+  } catch (err) {
+    console.log("An error has occurred ", err);
+  }
+});
+
+app.post("/new-user", async (req, res) => {
+  const { email, nombre, password, anos_experiencia, especialidad } = req.body;
+  console.log(email, nombre, password, anos_experiencia, especialidad);
+  try {
+    const client = await pool.connect();
+    const result = await client.query(
+      "INSERT into skaters (email, nombre, password, anos_experiencia, especialidad, foto, estado) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+      [email, nombre, password, anos_experiencia, especialidad, "test", false]
+    );
+    res.send(result.rows);
+    client.release(true);
+  } catch (err) {
+    console.log("An error has occurred ", err);
+  }
+});

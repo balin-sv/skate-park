@@ -12,14 +12,14 @@
         </div>
         <div class="form-group col-12 col-sm-6">
           <label>Nombre</label>
-          <input class="form-control m-auto" :value="userData.nombre" />
+          <input v-model="userData.nombre" class="form-control m-auto" />
         </div>
         <div class="form-group col-12 col-sm-6">
           <label>Password</label>
           <input
             type="password"
             class="form-control m-auto"
-            :value="userData.password"
+            v-model="userData.password"
           />
         </div>
         <div class="form-group col-12 col-sm-6">
@@ -27,23 +27,33 @@
           <input
             type="password"
             class="form-control m-auto"
-            :value="userData.password"
+            v-model="newPassword"
           />
         </div>
         <div class="form-group col-12 col-sm-6">
           <label>Años de experiencia</label>
           <input
             class="form-control m-auto"
-            :value="userData.anos_experiencia"
+            v-model="userData.anos_experiencia"
           />
         </div>
         <div class="form-group col-12 col-sm-6">
           <label>Especialidad</label>
-          <input class="form-control m-auto" :value="userData.especialidad" />
+          <input class="form-control m-auto" v-model="userData.especialidad" />
         </div>
       </div>
       <div class="mb-1">
-        <button class="btn btn-primary">Actualizar</button>
+        <button
+          @click="
+            (e) => {
+              e.preventDefault();
+              editAccount(userData.id);
+            }
+          "
+          class="btn btn-primary"
+        >
+          Actualizar
+        </button>
       </div>
       <div>
         <button
@@ -70,14 +80,36 @@ import axios from "axios";
 const router = useRouter();
 const authStore = useAuthStore();
 const userData = ref({});
+const newPassword = ref();
 
 onMounted(async () => {
   userData.value = await authStore.getUser();
+  newPassword.value = userData.value.password;
 });
 
 const deleteAccount = async (id) => {
   try {
     const { data } = await axios.delete(`http://localhost:5000/delete/${id}`);
+    router.push("/");
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const editAccount = async (id) => {
+  console.log(id);
+  console.log(userData.value);
+
+  if (userData.value.password != newPassword.value) {
+    return;
+  }
+  try {
+    const { data } = await axios.put(`http://localhost:5000/user/${id}`, {
+      nombre: userData.value.nombre,
+      password: userData.value.password,
+      anos_experiencia: userData.value.anos_experiencia,
+      especialidad: userData.value.especialidad,
+    });
     router.push("/");
   } catch (e) {
     console.log(e);
