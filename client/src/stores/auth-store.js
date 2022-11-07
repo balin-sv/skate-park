@@ -6,12 +6,14 @@ export const useAuthStore = defineStore(
   {
     state: () => ({
       user: {},
-      isAuthenticated: true,
     }),
 
     actions: {
       getUserStatus() {
         return this.isAuthenticated;
+      },
+      getUserRol() {
+        return this.user.is_admin;
       },
       getUser() {
         return this.user;

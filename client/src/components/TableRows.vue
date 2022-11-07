@@ -5,7 +5,10 @@
     <td>{{ user.nombre }}</td>
     <td>{{ user.anos_experiencia }}</td>
     <td>{{ user.especialidad }}</td>
+
+    <td v-if="isAdmin"><input type="checkbox" :checked="user.estado" /></td>
     <td
+      v-if="!isAdmin"
       class="font-weight-bold"
       :class="[user.estado ? 'text-success' : 'text-warning']"
     >
@@ -19,5 +22,6 @@ const props = defineProps({
   usersList: {
     type: Array,
   },
+  isAdmin: Boolean,
 });
 </script>

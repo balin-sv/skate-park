@@ -1,5 +1,5 @@
 <template>
-  <h1>Skate Park</h1>
+  <h1><RouterLink to="/">Skate Park</RouterLink></h1>
 
   <div class="py-4">
     <h2>Administración</h2>
@@ -17,6 +17,9 @@
         </tr>
       </thead>
       <tbody>
+        <table-rows :usersList="usersList" :isAdmin="true"></table-rows>
+      </tbody>
+      <!-- <tbody>
         <tr>
           <th scope="row">1</th>
           <td><div></div></td>
@@ -41,7 +44,26 @@
           <td>Ollie</td>
           <td><input type="checkbox" /></td>
         </tr>
-      </tbody>
+      </tbody> -->
     </table>
   </div>
 </template>
+<script setup>
+import { RouterLink } from "vue-router";
+import TableRows from "@/components/TableRows.vue";
+import { ref } from "vue";
+import axios from "axios";
+
+const usersList = ref([]);
+
+const getUsers = async (query = "") => {
+  await axios
+    .get("http://localhost:5000/users")
+    .then(async (res) => {
+      usersList.value = res.data;
+      console.log(res);
+    })
+    .catch((err) => console.log(err));
+};
+getUsers();
+</script>

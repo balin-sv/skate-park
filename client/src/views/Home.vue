@@ -20,7 +20,7 @@
         </tr>
       </thead>
       <tbody>
-        <table-rows :usersList="usersList"></table-rows>
+        <table-rows :usersList="usersList" :isAdmin="false"></table-rows>
       </tbody>
     </table>
     <RouterLink to="/login">Iniciar Sesión</RouterLink> |

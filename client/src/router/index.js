@@ -34,13 +34,11 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
-  // const authStore = useAuthStore();
-  // await authStore.getUserStatus();
-  // if (!authStore && to.name !== "login") {
-  //   return { name: "login" };
-  // }
-  // if (authStore && to.name == "login") {
-  //   return { name: "home" };
-  // }
+  const authStore = useAuthStore();
+  const isAdmin = await authStore.getUserRol();
+  if (!isAdmin && to.name == "admin") {
+    alert("no tienes rol de admin logea primero");
+    return { name: "login" };
+  }
 });
 export default router;

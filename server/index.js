@@ -34,17 +34,13 @@ const pool = new Pool(config);
 app.get("/users", async (req, res) => {
   const client = await pool.connect();
   const printAllUsers = {
-    text: "select * from skaters",
+    text: "select * from skaters where is_admin = false",
     values: [],
   };
   const result = await client.query(printAllUsers);
   console.log(result);
   res.send(result.rows);
   client.release(true);
-});
-
-app.listen(port, () => {
-  console.log("server start", port);
 });
 
 app.post("/login", async (req, res) => {
@@ -106,14 +102,59 @@ app.post("/new-user", async (req, res) => {
   const { email, nombre, password, anos_experiencia, especialidad } = req.body;
   console.log(email, nombre, password, anos_experiencia, especialidad);
   try {
-    const client = await pool.connect();
-    const result = await client.query(
-      "INSERT into skaters (email, nombre, password, anos_experiencia, especialidad, foto, estado) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-      [email, nombre, password, anos_experiencia, especialidad, "test", false]
-    );
-    res.send(result.rows);
-    client.release(true);
-  } catch (err) {
-    console.log("An error has occurred ", err);
+    const checkMSG = await checkEmail(email);
+    if (checkMSG === "ok") {
+      const client = await pool.connect();
+      const result = await client.query(
+        "INSERT into skaters (email, nombre, password, anos_experiencia, especialidad, foto, estado,is_admin) VALUES($1, $2, $3, $4, $5, $6, $7,$8) RETURNING id",
+        [
+          email,
+          nombre,
+          password,
+          anos_experiencia,
+          especialidad,
+          "test",
+          false,
+          false,
+        ]
+      );
+      res.send(result.rows);
+      client.release(true);
+    } else {
+      res.status(401).send([]);
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
+
+app.listen(port, () => {
+  console.log("server start", port);
+});
+
+///______________utils
+
+async function checkEmail(email) {
+  return new Promise(async (resolve, reject) => {
+    const client = await pool.connect();
+    const checkEmail = {
+      text: "select 1 from skaters where email = $1",
+      values: [email],
+    };
+    client
+      .query(checkEmail)
+      .then((res) => {
+        if (res.rowCount > 0) {
+          resolve("email ya existe");
+        } else {
+          resolve("ok");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        client.release();
+      });
+  });
+}

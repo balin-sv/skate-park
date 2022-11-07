@@ -68,6 +68,7 @@ const newPassword = ref();
 
 const createAccount = async () => {
   if (password.value != newPassword.value) {
+    alert("contracenas no coiciden");
     return;
   }
   try {
@@ -81,6 +82,7 @@ const createAccount = async () => {
     router.push("/");
   } catch (e) {
     console.log(e);
+    alert("email esta ocupado");
   }
 };
 </script>

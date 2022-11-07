@@ -53,9 +53,15 @@ const password = ref("");
 const login = async (e) => {
   e.preventDefault();
   try {
-    authStore.logIn(email.value, password.value).then((res) => {
+    authStore.logIn(email.value, password.value).then(async (res) => {
       if (res) {
-        router.push("/profile");
+        const isAdmin = await authStore.getUserRol();
+        console.log(isAdmin);
+        if (isAdmin) {
+          router.push("/admin");
+        } else {
+          router.push("/profile");
+        }
       } else {
         //temporal
         location.reload();
