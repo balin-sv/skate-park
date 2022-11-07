@@ -1,4 +1,5 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const app = express();
 const { Pool } = require("pg");
 var bodyParser = require("body-parser");
@@ -38,7 +39,6 @@ app.get("/users", async (req, res) => {
     values: [],
   };
   const result = await client.query(printAllUsers);
-  console.log(result);
   res.send(result.rows);
   client.release(true);
 });
@@ -55,7 +55,8 @@ app.post("/login", async (req, res) => {
     if (result.rows.length == 0) {
       res.status(401).send("el usuario no autorizado");
     } else {
-      res.status(200).send(result.rows);
+      const token = jwt.sign({ user: result.id }, "my_token");
+      res.status(200).send({ token, user: result.rows[0] });
     }
     client.release(true);
   } catch (err) {
@@ -63,39 +64,49 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.delete("/delete/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const client = await pool.connect();
-    const deleteUser = {
-      text: "delete from skaters where id =$1",
-      values: [id],
-    };
-    const result = await client.query(deleteUser);
-    res.send(result.rows);
-    client.release(true);
-  } catch (err) {
-    console.log("An error has occurred ", err);
-  }
+app.delete("/delete/:id", verifyToken, async (req, res) => {
+  jwt.verify(req.token, "my_token", async (err, data) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      const { id } = req.params;
+      try {
+        const client = await pool.connect();
+        const deleteUser = {
+          text: "delete from skaters where id =$1",
+          values: [id],
+        };
+        const result = await client.query(deleteUser);
+        res.send(result.rows);
+        client.release(true);
+      } catch (err) {
+        console.log("An error has occurred ", err);
+      }
+    }
+  });
 });
 
-app.put("/user/:id", async (req, res) => {
-  const { nombre, password, anos_experiencia, especialidad } = req.body;
-  const id = req.params.id;
-  console.log("id:", id);
-  console.log(nombre, password, anos_experiencia, especialidad);
-  try {
-    const client = await pool.connect();
-    const updateUser = {
-      text: `update skaters set nombre=$1,password=$2,anos_experiencia=$3,especialidad=$4 where id=${id}`,
-      values: [nombre, password, anos_experiencia, especialidad],
-    };
-    const result = await client.query(updateUser);
-    res.send(result.rows);
-    client.release(true);
-  } catch (err) {
-    console.log("An error has occurred ", err);
-  }
+app.put("/user/:id/", verifyToken, async (req, res) => {
+  jwt.verify(req.token, "my_token", async (err, data) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      const { nombre, password, anos_experiencia, especialidad } = req.body;
+      const id = req.params.id;
+      try {
+        const client = await pool.connect();
+        const updateUser = {
+          text: `update skaters set nombre=$1,password=$2,anos_experiencia=$3,especialidad=$4 where id=${id}`,
+          values: [nombre, password, anos_experiencia, especialidad],
+        };
+        const result = await client.query(updateUser);
+        res.send(result.rows);
+        client.release(true);
+      } catch (err) {
+        console.log("An error has occurred ", err);
+      }
+    }
+  });
 });
 
 app.post("/new-user", async (req, res) => {
@@ -157,4 +168,15 @@ async function checkEmail(email) {
         client.release();
       });
   });
+}
+
+async function verifyToken(req, res, next) {
+  const bearerToken = req.headers["authtoken"];
+  if (typeof bearerHeader !== "indefined") {
+    req.token = bearerToken;
+    console.log("token exist!");
+    next();
+  } else {
+    res.sendStatus(403);
+  }
 }

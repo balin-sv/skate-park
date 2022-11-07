@@ -89,7 +89,9 @@ onMounted(async () => {
 
 const deleteAccount = async (id) => {
   try {
-    const { data } = await axios.delete(`http://localhost:5000/delete/${id}`);
+    const { data } = await axios.delete(`http://localhost:5000/delete/${id}`, {
+      headers: { authToken: authStore.getUserToken() },
+    });
     router.push("/");
   } catch (e) {
     console.log(e);
@@ -104,12 +106,16 @@ const editAccount = async (id) => {
     return;
   }
   try {
-    const { data } = await axios.put(`http://localhost:5000/user/${id}`, {
-      nombre: userData.value.nombre,
-      password: userData.value.password,
-      anos_experiencia: userData.value.anos_experiencia,
-      especialidad: userData.value.especialidad,
-    });
+    const { data } = await axios.put(
+      `http://localhost:5000/user/${id}`,
+      {
+        nombre: userData.value.nombre,
+        password: userData.value.password,
+        anos_experiencia: userData.value.anos_experiencia,
+        especialidad: userData.value.especialidad,
+      },
+      { headers: { authToken: authStore.getUserToken() } }
+    );
     router.push("/");
   } catch (e) {
     console.log(e);

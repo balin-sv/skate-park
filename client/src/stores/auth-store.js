@@ -6,11 +6,12 @@ export const useAuthStore = defineStore(
   {
     state: () => ({
       user: {},
+      userToken: "",
     }),
 
     actions: {
-      getUserStatus() {
-        return this.isAuthenticated;
+      getUserToken() {
+        return this.userToken;
       },
       getUserRol() {
         return this.user.is_admin;
@@ -27,7 +28,9 @@ export const useAuthStore = defineStore(
             })
             .then((result) => {
               if (result) {
-                this.user = result.data[0];
+                console.log(result.data);
+                this.user = result.data.user;
+                this.userToken = result.data.token;
                 resolve(true);
               } else {
                 resolve(false);
