@@ -1,5 +1,5 @@
 <template>
-  <h1>Skate Park</h1>
+  <h1><RouterLink to="/">Skate Park</RouterLink></h1>
 
   <div class="py-4">
     <h2>Datos del perfil</h2>
@@ -46,19 +46,41 @@
         <button class="btn btn-primary">Actualizar</button>
       </div>
       <div>
-        <button class="btn btn-danger">Eliminar cuenta</button>
+        <button
+          @click="
+            (e) => {
+              e.preventDefault();
+              deleteAccount(userData.id);
+            }
+          "
+          class="btn btn-danger"
+        >
+          Eliminar cuenta
+        </button>
       </div>
     </form>
   </div>
 </template>
 <script setup>
 import { useAuthStore } from "@/stores/auth-store.js";
+import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
+import axios from "axios";
 
+const router = useRouter();
 const authStore = useAuthStore();
 const userData = ref({});
 
 onMounted(async () => {
   userData.value = await authStore.getUser();
 });
+
+const deleteAccount = async (id) => {
+  try {
+    const { data } = await axios.delete(`http://localhost:5000/delete/${id}`);
+    router.push("/");
+  } catch (e) {
+    console.log(e);
+  }
+};
 </script>

@@ -66,3 +66,19 @@ app.post("/login", async (req, res) => {
     console.log("An error has occurred ", err);
   }
 });
+
+app.delete("/delete/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const client = await pool.connect();
+    const deleteUser = {
+      text: "delete from skaters where id =$1",
+      values: [id],
+    };
+    const result = await client.query(deleteUser);
+    res.send(result.rows);
+    client.release(true);
+  } catch (err) {
+    console.log("An error has occurred ", err);
+  }
+});
