@@ -1,11 +1,11 @@
 CREATE DATABASE skatepark;
 
-CREATE TABLE skaters (id SERIAL, email VARCHAR(50) NOT NULL, nombre
-VARCHAR(25) NOT NULL, password VARCHAR(25) NOT NULL, anos_experiencia
-INT NOT NULL, especialidad VARCHAR(50) NOT NULL, foto VARCHAR(255) NOT
-NULL, estado BOOLEAN NOT NULL, is_admin BOOLEAN NOT NULL);
+CREATE TABLE skaters (id SERIAL, email VARCHAR(50) NOT NULL, name
+VARCHAR(25) NOT NULL, password VARCHAR(25) NOT NULL, experience
+INT NOT NULL, specialty VARCHAR(50) NOT NULL, photo VARCHAR(255) NOT
+NULL, is_confirmed BOOLEAN NOT NULL, is_admin BOOLEAN NOT NULL);
 
-INSERT INTO skaters (email,nombre,password,anos_experiencia,especialidad,foto,estado,is_admin)
+INSERT INTO skaters (email,name,password,experience,specialty,photo,is_confirmed,is_admin)
 VALUES
   ('svet@gmail.com','svet','123',0,'admin','test',true, true), 
   ('bip@gmail.com','bip','1234',3,'byker','test',false, false), 

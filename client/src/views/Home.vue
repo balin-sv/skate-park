@@ -1,48 +1,58 @@
-<script setup></script>
-
 <template>
-  <h1>Skate Park</h1>
-
-  <div class="py-4">
-    <h2>Lista de participantes</h2>
-
-    <hr />
-
+  <TableLayout>
+    <template #page-title>
+      <h1>Skate Park Participantes</h1>
+    </template>
+    <table-title></table-title>
+    <hr class="w-50" />
     <table class="table table-dark">
       <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Foto</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Años de experiencia</th>
-          <th scope="col">Especialidad</th>
-          <th scope="col">Estado</th>
-        </tr>
+        <table-header-row :tableHeaders="tableHeaders"> </table-header-row>
       </thead>
       <tbody>
-        <table-rows :usersList="usersList" :isAdmin="false"></table-rows>
+        <table-body-rows
+          :usersList="usersList"
+          :isAdmin="false"
+        ></table-body-rows>
       </tbody>
     </table>
-    <RouterLink to="/login">Iniciar Sesión</RouterLink> |
-    <RouterLink to="/register">Registrarme</RouterLink>
-  </div>
+  </TableLayout>
 </template>
 <script setup>
-import { RouterLink } from "vue-router";
-import TableRows from "@/components/TableRows.vue";
-import { ref } from "vue";
+import TableLayout from "@/layouts/TableLayout.vue";
+// import Table from "@/components/Table.vue";
+import TableTitle from "@/components/TableTitle.vue";
+import TableBodyRows from "@/components/TableBodyRows.vue";
+import TableHeaderRow from "@/components/TableHeaderRow.vue";
+
+import { useUsersStore } from "@/stores/users-store.js";
+import { ref, onMounted } from "vue";
 import axios from "axios";
 
+const usersStore = useUsersStore();
 const usersList = ref([]);
+const tableHeaders = ref();
 
-const getUsers = async (query = "") => {
-  await axios
-    .get("http://localhost:5000/users")
-    .then((res) => {
-      usersList.value = res.data;
-      console.log(res);
-    })
-    .catch((err) => console.log(err));
+const getUsers = async () => {
+  return new Promise(async (resolve, reject) => {
+    axios
+      .get("http://localhost:5000/users")
+      .then((res) => {
+        usersList.value = res.data.data;
+        tableHeaders.value = [];
+        Object.entries(res.data.table_headers).forEach(([key, value]) => {
+          tableHeaders.value.push({ value: key, title: value });
+        });
+      })
+      .then(() => {
+        resolve(true);
+      })
+      .catch((err) => reject(err))
+      .finally(() => {
+        resolve(true);
+      });
+  });
 };
-getUsers();
+
+await getUsers();
 </script>

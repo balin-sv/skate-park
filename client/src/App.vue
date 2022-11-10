@@ -1,11 +1,26 @@
 <template>
-  <router-view />
+  <Suspense>
+    <component :is="layout">
+      <router-view />
+    </component>
+    <template #fallback> Loading...content </template>
+  </Suspense>
+  <NavBar></NavBar>
 </template>
+
 <script setup>
 import { RouterView } from "vue-router";
-import { onMounted } from "vue";
+import { computed, defineAsyncComponent } from "vue";
+import { useRoute } from "vue-router";
+import NavBar from "@/components/NavBar.vue";
 
-onMounted(() => {
-  console.log("in app");
+const layout = computed(() => {
+  const { meta } = useRoute();
+  if (meta.layout == {}) {
+    return;
+  }
+  console.log(meta);
+  const layoutName = meta.layout ?? "DefaultLayout";
+  return defineAsyncComponent(() => import(`./layouts/${layoutName}.vue`));
 });
 </script>
