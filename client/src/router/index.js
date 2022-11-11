@@ -54,10 +54,10 @@ router.beforeEach(async (to, from) => {
   console.log(isUser.value);
   console.log(isAdmin);
 
-  if (!isAdmin && to.name == "admin") {
-    notif.error("entra con sus credenciales");
-    return { name: "login" };
-  }
+  // if (!isAdmin && to.name == "admin") {
+  //   notif.error("entra con sus credenciales");
+  //   return { name: "login" };
+  // }
   if (!isUser.value && to.name == "profile") {
     notif.error("entra con sus credenciales");
     return { name: "login" };

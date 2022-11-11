@@ -1,5 +1,5 @@
 <template>
-  <table-title></table-title>
+  <table-title :tableTitle="tableTitle"></table-title>
   <hr class="w-50" />
   <table class="table table-dark">
     <thead>
@@ -7,8 +7,8 @@
     </thead>
     <tbody>
       <table-body-rows
-        :usersList="usersList"
-        :isAdmin="false"
+        :tableRows="tableRows"
+        :isAdmin="isAdmin"
       ></table-body-rows>
     </tbody>
   </table>
@@ -19,21 +19,40 @@ import TableTitle from "@/components/TableTitle.vue";
 import TableBodyRows from "@/components/TableBodyRows.vue";
 import TableHeaderRow from "@/components/TableHeaderRow.vue";
 
-// import { useUsersStore } from "@/stores/users-store.js";
-// import { ref, onMounted } from "vue";
+import { ref } from "vue";
+import axios from "axios";
 
-// const usersStore = useUsersStore();
-// const usersList = ref([]);
-// const tableHeaders = ref();
+const tableRows = ref([]);
+const tableHeaders = ref();
 
-// const getUsers = async () => {
-//   await usersStore.getUsers();
-//   usersList.value = usersStore.getTableUserList();
-//   tableHeaders.value = usersStore.getTableHeaders();
-// };
+const props = defineProps({
+  tableTitle: {
+    type: String,
+  },
+  isAdmin: {
+    type: Boolean,
+  },
+});
 
-// onMounted(() => {
-//   console.log("in");
-//   getUsers();
-// });
+const getUsers = async () => {
+  return new Promise(async (resolve, reject) => {
+    axios
+      .get("http://localhost:5000/users")
+      .then((res) => {
+        setTimeout(async () => {
+          tableRows.value = res.data.data;
+          tableHeaders.value = [];
+          Object.entries(res.data.table_headers).forEach(([key, value]) => {
+            tableHeaders.value.push({ value: key, title: value });
+          });
+          resolve(true);
+        }, 2000);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+await getUsers();
 </script>

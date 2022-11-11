@@ -1,5 +1,5 @@
 <template>
-  <tr v-for="(user, index) in usersList" :key="index">
+  <tr v-for="(user, index) in tableRows" :key="index">
     <td scope="row">{{ index + 1 }}</td>
     <td><div></div></td>
     <td>{{ user.name }}</td>
@@ -21,9 +21,11 @@
 
 <script setup>
 const props = defineProps({
-  usersList: {
+  tableRows: {
     type: Array,
   },
-  isAdmin: Boolean,
+  isAdmin: {
+    type: Boolean,
+  },
 });
 </script>
