@@ -1,5 +1,14 @@
 <template>
-  <h1><RouterLink to="/">Skate Park</RouterLink></h1>
+  <div>
+    <FormLayout>
+      <template #page-title>
+        <h1>User Page</h1>
+      </template>
+      <Form :isAuthRequired="true" formTitle="Cambiar datos personales" />
+    </FormLayout>
+  </div>
+
+  <!-- <h1><RouterLink to="/">Skate Park</RouterLink></h1>
 
   <div class="py-4">
     <h2>Datos del perfil</h2>
@@ -69,56 +78,9 @@
         </button>
       </div>
     </form>
-  </div>
+  </div> -->
 </template>
 <script setup>
-import { useAuthStore } from "@/stores/auth-store.js";
-import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
-import axios from "axios";
-
-const router = useRouter();
-const authStore = useAuthStore();
-const userData = ref({});
-const newPassword = ref();
-
-onMounted(async () => {
-  userData.value = await authStore.getUser();
-  newPassword.value = userData.value.password;
-});
-
-const deleteAccount = async (id) => {
-  try {
-    const { data } = await axios.delete(`http://localhost:5000/delete/${id}`, {
-      headers: { authToken: authStore.getUserToken() },
-    });
-    router.push("/");
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-const editAccount = async (id) => {
-  console.log(id);
-  console.log(userData.value);
-
-  if (userData.value.password != newPassword.value) {
-    return;
-  }
-  try {
-    const { data } = await axios.put(
-      `http://localhost:5000/user/${id}`,
-      {
-        nombre: userData.value.nombre,
-        password: userData.value.password,
-        anos_experiencia: userData.value.anos_experiencia,
-        especialidad: userData.value.especialidad,
-      },
-      { headers: { authToken: authStore.getUserToken() } }
-    );
-    router.push("/");
-  } catch (e) {
-    console.log(e);
-  }
-};
+import Form from "@/components/Form.vue";
+import FormLayout from "@/layouts/FormLayout.vue";
 </script>

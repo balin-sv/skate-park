@@ -1,3 +1,3 @@
 <template>
-  <h1>def</h1>
+  <slot></slot>
 </template>

@@ -36,7 +36,7 @@ const layout = computed(() => {
     return;
   }
   console.log(meta);
-  const layoutName = meta.layout ?? "DefaultLayout";
+  const layoutName = meta.layout ? meta.layout : "DefaultLayout";
   return defineAsyncComponent(() => import(`./layouts/${layoutName}.vue`));
 });
 </script>

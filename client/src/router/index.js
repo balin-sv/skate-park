@@ -19,6 +19,9 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: () => import("../views/Login.vue"),
+      meta: {
+        layout: "DefaultLayout",
+      },
     },
     {
       path: "/register",
@@ -58,9 +61,10 @@ router.beforeEach(async (to, from) => {
   //   notif.error("entra con sus credenciales");
   //   return { name: "login" };
   // }
-  if (!isUser.value && to.name == "profile") {
-    notif.error("entra con sus credenciales");
-    return { name: "login" };
-  }
+
+  // if (!isUser.value && to.name == "profile") {
+  //   notif.error("entra con sus credenciales");
+  //   return { name: "login" };
+  // }
 });
 export default router;
