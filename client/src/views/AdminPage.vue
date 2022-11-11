@@ -1,69 +1,23 @@
 <template>
-  <h1><RouterLink to="/">Skate Park</RouterLink></h1>
+  <div>
+    <TableLayout>
+      <template #page-title>
+        <h1>Admin</h1>
+      </template>
 
-  <div class="py-4">
-    <h2>Administración</h2>
-    <hr class="w-50" />
-
-    <table class="table w-50 m-auto">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Foto</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Años de experiencia</th>
-          <th scope="col">Especialidad</th>
-          <th scope="col">Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        <table-rows :usersList="usersList" :isAdmin="true"></table-rows>
-      </tbody>
-      <!-- <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td><div></div></td>
-          <td>Tony Hawk</td>
-          <td>12</td>
-          <td>Kickflip</td>
-          <td><input type="checkbox" checked /></td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td><div></div></td>
-          <td>Evelien Bouilliart</td>
-          <td>10</td>
-          <td>Heelflip</td>
-          <td><input type="checkbox" checked /></td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td><div></div></td>
-          <td>Danny Way</td>
-          <td>8</td>
-          <td>Ollie</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-      </tbody> -->
-    </table>
+      <Table
+        :isAdmin="true"
+        tableTitle="Lista de Participantes version Admin"
+      />
+    </TableLayout>
   </div>
 </template>
 <script setup>
-import { RouterLink } from "vue-router";
-import TableRows from "@/components/TableRows.vue";
 import { ref } from "vue";
-import axios from "axios";
+import Table from "@/components/Table.vue";
+import TableLayout from "@/layouts/TableLayout.vue";
+// import { useAuthStore } from "@/stores/auth-store";
 
-const usersList = ref([]);
-
-const getUsers = async (query = "") => {
-  await axios
-    .get("http://localhost:5000/users")
-    .then(async (res) => {
-      usersList.value = res.data;
-      console.log(res);
-    })
-    .catch((err) => console.log(err));
-};
-getUsers();
+// const authStore = useAuthStore();
+// const isAdmin = ref(await authStore.getUserRol());
 </script>

@@ -16,7 +16,7 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.json());
+// app.use(express.json());
 
 const config = {
   user: "postgres",
@@ -34,12 +34,26 @@ const pool = new Pool(config);
 
 app.get("/users", async (req, res) => {
   const client = await pool.connect();
-  const printAllUsers = {
+  const getUsers = {
     text: "select * from skaters where is_admin = false",
     values: [],
   };
-  const result = await client.query(printAllUsers);
-  res.send(result.rows);
+  const result = await client.query(getUsers);
+  console.log(result.rows);
+
+  let ojb = {
+    data: result.rows,
+    table_headers: {
+      photo: "Foto",
+      name: "Nombre",
+      experience: "Anos de experiencia",
+      specialty: "Especialidad",
+      is_confirmed: "Estado",
+    },
+  };
+
+  res.send(ojb);
+
   client.release(true);
 });
 
@@ -55,7 +69,9 @@ app.post("/login", async (req, res) => {
     if (result.rows.length == 0) {
       res.status(401).send("el usuario no autorizado");
     } else {
-      const token = jwt.sign({ user: result.id }, "my_token");
+      const token = jwt.sign({ user: result.id }, "my_token", {
+        expiresIn: "1200",
+      });
       res.status(200).send({ token, user: result.rows[0] });
     }
     client.release(true);

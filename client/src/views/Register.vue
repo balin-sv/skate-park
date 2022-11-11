@@ -1,5 +1,4 @@
-<template>
-  <h1><RouterLink to="/">Skate Park</RouterLink></h1>
+<!-- <h1><RouterLink to="/">Skate Park</RouterLink></h1>
 
   <div class="py-4">
     <h2>Registro</h2>
@@ -49,40 +48,19 @@
       </button>
       <p><RouterLink to="/login">Iniciar Sesión</RouterLink></p>
     </form>
+  </div> -->
+
+<template>
+  <div>
+    <FormLayout>
+      <template #page-title>
+        <h1>Register</h1>
+      </template>
+      <Form :isAuthRequired="false" formTitle="Registrarse en la lista" />
+    </FormLayout>
   </div>
 </template>
 <script setup>
-import { RouterLink } from "vue-router";
-import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
-import axios from "axios";
-
-const router = useRouter();
-const email = ref("");
-const nombre = ref("");
-const password = ref("");
-const anos_experiencia = ref();
-const especialidad = ref();
-
-const newPassword = ref();
-
-const createAccount = async () => {
-  if (password.value != newPassword.value) {
-    alert("contracenas no coiciden");
-    return;
-  }
-  try {
-    const { data } = await axios.post(`http://localhost:5000/new-user`, {
-      email: email.value,
-      nombre: nombre.value,
-      password: password.value,
-      anos_experiencia: parseInt(anos_experiencia.value),
-      especialidad: especialidad.value,
-    });
-    router.push("/");
-  } catch (e) {
-    console.log(e);
-    alert("email esta ocupado");
-  }
-};
+import Form from "@/components/Form.vue";
+import FormLayout from "@/layouts/FormLayout.vue";
 </script>
