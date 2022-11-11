@@ -24,7 +24,7 @@
 </template>
 <script setup>
 import { RouterLink } from "vue-router";
-import TableRows from "@/components/TableRows.vue";
+// import TableRows from "@/components/TableRows.vue";
 import { ref, onMounted } from "vue";
 import { useUsersStore } from "@/stores/users-store.js";
 
